@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemesanan Lapangan</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+</head>
+<body>
+    <header>
+        <h1>Form Pemesanan</h1>
+        <p>Form pemesanan lapangan futsal</p>
+    </header>
+    <main id="app">
+        <div id="boxform">
+            <form v-on:submit.prevent="addItem">
+                <div id="form1">
+                    <label for="nama">Nama Lengkap</label><br>
+                    <input type="text" id="nama"  placeholder="Masukkan nama lengkap" required v-model="itemName"><br>
+
+                    <label for="alamat">Alamat</label><br>
+                    <input type="text" id="alamat"  placeholder="Masukkan alamat" required v-model="itemAdress"><br>
+
+                    <label for="nomor">Nomor Telepon</label><br>
+                    <input type="tel" id="nomor" placeholder="Masukkan no. hp" required v-model="itemContact" pattern="[0-9]*"><br>
+                </div>
+
+                <div id="form2">
+                    <label for="durasi">Durasi</label><br>
+                    <input type="number" id="durasi"  placeholder="Pilih durasi" required v-model="itemDurasi"><br>
+
+                    <label for="nolap">Nomor Lapangan</label><br>
+                    <select id="nolap" required v-model="itemLapangan">
+                        <option value="pilih lapangan" selected hidden disabled>pilih lapangan</option>
+                        <option value="lapangan 1">Lapangan 1</option>
+                        <option value="lapangan 2">Lapangan 2</option>
+                        <option value="lapangan 3">Lapangan 3</option>
+                    </select><br>
+
+
+                    <label for="tanggal">Tanggal Main</label><br>
+                    <input type="date" id="tanggal" placeholder="pilih tanggal" required v-model="itemDate"><br>
+
+                    <label for="jam">Waktu Main</label><br>
+                    <input type="time" id="jam" placeholder="pilih jam" required v-model="itemTime"><br>
+                </div>
+
+                <div id="button">
+                    <button type="submit" id="submit">Masukkan data </button>
+                </div>
+            </form>
+
+            <div id="table-content">
+                <table>
+                    <tr>
+                        <th>Nama Lengkap</th>
+                        <th>Alamat</th>
+                        <th>No. Hp</th>
+                        <th>Lapangan</th>
+                        <th>Durasi Sewa</th>
+                        <th>Tanggal</th>
+                        <th>Waktu</th>
+                        <th>Action</th>
+                    </tr>
+    
+                    <tr v-for="item in orderList">
+                        <td>{{item.name}}</td>
+                        <td>{{item.adress}}</td>
+                        <td>{{item.contact}}</td>
+                        <td>{{item.lapangan}}</td>
+                        <td>{{item.durasi}} jam</td>
+                        <td>{{item.date}}</td>
+                        <td>{{item.time}}</td>
+                        <td>
+                            <button class="update-data"><img src="assets/edit.png" alt="edit"></button>
+                            <button class="update-data"><img src="assets/delete.png" alt="delete"></button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div id="boxbag"></div>
+    </main>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <script>
+        const app = Vue.createApp({
+            data(){
+                return{
+                    itemName: null,
+                    itemAdress: null,
+                    itemContact: null,
+                    itemLapangan: null,
+                    itemDurasi: null,
+                    itemDate: null,
+                    itemTime: null,
+                    orderList: [
+                        {
+                            name: 'name',
+                            adress: 'adress',
+                            contact: 'contact',
+                            lapangan: 'lapangan',
+                            durasi: 'durasi',
+                            date: 'date',
+                            time: 'time'
+                        }
+                    ]
+                }
+            },
+            methods:{
+                addItem(){
+                    let item = {
+                        name: this.itemName,
+                        adress: this.itemAdress,
+                        contact: this.itemContact,
+                        lapangan: this.itemLapangan,
+                        durasi: this.itemDurasi,
+                        date: this.itemDate,
+                        time: this.itemTime
+                    }
+                    this.orderList.push(item)
+                    this.itemName = null
+                    this.itemAdress = null
+                    this.itemContact = null
+                    this.itemLapangan = null
+                    this.itemDurasi = null
+                    this.itemDate = null
+                    this.itemTime = null
+                }
+            }
+        })
+        app.mount('#app')
+    </script>
+    
+</body>
+</html>
