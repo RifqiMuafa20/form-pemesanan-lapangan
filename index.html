@@ -102,21 +102,11 @@
                     lapangan: '',
                     date: '',
                     time: '',
+                    id: 0
                 }
             },
 
             methods: {
-                allRecords() {
-                    axios.post('ajaxfile.php', {
-                        request: 1
-                    })
-                    .then(function (response) {
-                        app.pemesanan = response.data;
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                },
                 addItem() {
                     if(this.name != '' && this.addres != '' && this.contact != '' && this.durasi != '' && this.lapangan != '' && this.date != '' && this.time != '') {
                         axios.post('ajaxfile.php', {
@@ -189,11 +179,21 @@
                     .catch(function (error) {
                         console.log(error);
                     });
-                }
+                },
+
+                allRecords() {
+                    axios.get('fetchdata.php')
+                    .then(function(response) {
+                        app.pemesanan = response.data;
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+                },
             }, 
             created() {
                 this.allRecords();
-            }
+            },
         })
         app.mount('#myapp')
 

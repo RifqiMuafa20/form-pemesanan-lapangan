@@ -6,26 +6,6 @@ $data = json_decode(file_get_contents("php://input"));
 
 $request = $data->request;
 
-if($request == 1){
-    $userData = mysqli_query($con, "SELECT * FROM 'pemesanan'");
-
-    $response = array(
-        'name' => 'name',
-        'addres' => 'addres',
-        'contact' => 'contact',
-        'lapangan' => 'lapangan',
-        'durasi' => 'durasi',
-        'date' => 'date',
-        'time' => 'time'
-    );
-
-    while($row = mysqli_fetch_assoc($userData)){
-        $response[] = $row;
-    }
-    echo json_encode($response);
-    exit;
-}
-
 if($request == 2){
     $name = $data->name;
     $addres = $data->addres;
