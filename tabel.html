@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tabel Pemesanan Lapangan</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    </head>
+<body>
+    <main id="myapp">
+        <div id="table-content">
+            <table>
+                <tr>
+                    <th>Nama Lengkap</th>
+                    <th>Alamat</th>
+                    <th>Nomor Hp</th>
+                    <th>Lapangan</th>
+                    <th>Durasi Sewa</th>
+                    <th>Tanggal</th>
+                    <th>Waktu</th>
+                    <th>Action</th>
+                </tr>
+
+                <tr v-for="item in pemesanan">
+                    <td>{{item.name}}</td>
+                    <td>{{item.addres}}</td>
+                    <td>{{item.contact}}</td>
+                    <td>{{item.lapangan}}</td>
+                    <td>{{item.durasi}}</td>
+                    <td>{{item.date}}</td>
+                    <td>{{item.time}}</td>
+                    <td>
+                        <button class="update-data"><img src="assets/edit.png" value="Update" @click="updateItem(index, item.id)"></button>
+                        <button class="update-data"><img src="assets/delete.png" alt="delete" value="Delete" @click="deleteItem(index, item.id)"></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </main>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+
+    <script>
+        const app = Vue.createApp({
+            el: '#myapp',
+            data(){
+                return {
+                    pemesanan: [],
+                }
+            },
+
+            methods: {
+                getItem(){
+                    axios.get('ajaxfetch.php')
+                    .then( (response) => {
+                        this.pemesanan= response.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+
+                deleteItem(index, id){
+                    axios.delete('ajaxdelete.php', {
+                        data : {
+                            id : id
+                        }
+                    })
+                    .then((response) => {
+                        console.log(response.data);
+                        alert(response.data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+                }
+            },
+            created() {
+                this.getItem();
+            }
+        })
+        app.mount('#myapp')
+    </script>
+</body>
+</html>
