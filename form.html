@@ -50,39 +50,9 @@
                     <button type="submit" id="submit" value="add" @click="addItem()">Masukkan data </button>
                 </div>
             </form>
-
-            <div id="table-content">
-                <table>
-                    <tr>
-                        <th>Nama Lengkap</th>
-                        <th>Alamat</th>
-                        <th>Nomor Hp</th>
-                        <th>Lapangan</th>
-                        <th>Durasi Sewa</th>
-                        <th>Tanggal</th>
-                        <th>Waktu</th>
-                        <th>Action</th>
-                    </tr>
-    
-                    <tr v-for="(item, index) in pemesanan">
-                        <td>{{item.name}}</td>
-                        <td>{{item.addres}}</td>
-                        <td>{{item.contact}}</td>
-                        <td>{{item.lapangan}}</td>
-                        <td>{{item.durasi}}</td>
-                        <td>{{item.date}}</td>
-                        <td>{{item.time}}</td>
-                        <td>
-                            <input type="button" value="Update" @click="updateItem(index, item.id)">&nbsp;
-                            <input type="button" value="Delete" @click="deleteItem(index, item.id)">
-                            
-                        </td>
-                    </tr>
-                </table>
-            </div>
         </div>
 
-        <div id="boxbag"></div>
+        
     </main>
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -102,14 +72,13 @@
                     lapangan: '',
                     date: '',
                     time: '',
-                    id: 0
                 }
             },
 
             methods: {
                 addItem() {
                     if(this.name != '' && this.addres != '' && this.contact != '' && this.durasi != '' && this.lapangan != '' && this.date != '' && this.time != '') {
-                        axios.post('ajaxfile.php', {
+                        axios.post('ajaxcreate.php', {
                             request: 2,
                             name: this.name,
                             addres: this.addres,
@@ -120,7 +89,6 @@
                             time: this.time,
                         })
                         .then(function (response) {
-                            app.allRecords();
                             app.name = '';
                             app.addres = '';
                             app.contact = '';
@@ -138,62 +106,7 @@
                         alert('fill all fields');
                     }
                 },
-                updateItem(index, id) {
-                    var name = this.pemesanan[index].name;
-                    var addres = this.pemesanan[index].addres;
-                    var contact = this.pemesanan[index].contact;
-                    var durasi = this.pemesanan[index].durasi;
-                    var lapangan = this.pemesanan[index].lapangan;
-                    var date = this.pemesanan[index].date;
-                    var time = this.pemesanan[index].time;
-
-                    if(name != '' && addres != '' && contact != '' && durasi != '' && lapangan != '' && date != '' && time != '') {
-                        axios.post('ajaxfile.php', {
-                            request: 3,
-                            id: id,
-                            name: name,
-                            addres: addres,
-                            contact: contact,
-                            durasi: durasi,
-                            lapangan: lapangan,
-                            date: date,
-                            time: time,
-                        })
-                        .then(function (response) {
-                            alert(response.data);
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                    }
-                },
-                deleteItem(index, id) {
-                    axios.post('ajaxfile.php', {
-                        request: 4,
-                        id: id
-                    })
-                    .then(function (response) {
-                        app.pemesanan.splice(index, 1);
-                        alert(response.data);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                },
-
-                allRecords() {
-                    axios.get('fetchdata.php')
-                    .then(function(response) {
-                        app.pemesanan = response.data;
-                    })
-                    .catch(function(error) {
-                        console.log(error);
-                    });
-                },
             }, 
-            created() {
-                this.allRecords();
-            },
         })
         app.mount('#myapp')
 
