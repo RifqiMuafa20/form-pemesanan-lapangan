@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemesanan Lapangan</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+</head>
+<body>
+    <header>
+        <h1>Form Pemesanan</h1>
+        <p>Form pemesanan lapangan futsal</p>
+    </header>
+    <main id="myapp">
+        <div id="boxform" v-for="item in pemesanan">
+            <form>
+                <div id="form1">
+                    <label for="nama">Nama Lengkap</label><br>
+                    <input type="text" id="nama"  required v-model="item.name"><br>
+
+                    <label for="alamat">Alamat</label><br>
+                    <input type="text" id="alamat"  required v-model="item.addres"><br>
+
+                    <label for="nomor">Nomor Telepon</label><br>
+                    <input type="tel" id="nomor" required v-model="item.contact" pattern="[0-9]*"><br>
+                </div>
+
+                <div id="form2">
+                    <label for="durasi">Durasi</label><br>
+                    <input type="number" id="durasi" required v-model="item.durasi"><br>
+
+                    <label for="nolap">Nomor Lapangan</label><br>
+                    <select id="nolap" required v-model="item.lapangan">
+                        <option value="pilih lapangan" hidden disabled>pilih lapangan</option>
+                        <option value="lapangan 1">Lapangan 1</option>
+                        <option value="lapangan 2">Lapangan 2</option>
+                        <option value="lapangan 3">Lapangan 3</option>
+                    </select><br>
+
+
+                    <label for="tanggal">Tanggal Main</label><br>
+                    <input type="date" id="tanggal" required v-model="item.date"><br>
+
+                    <label for="jam">Waktu Main</label><br>
+                    <input type="time" id="jam" required v-model="item.time"><br>
+                </div>
+
+                <div id="button">
+                    <button type="submit" id="submit" value="add" @click="updateItem(item)">Perbarui data </button>
+                </div>
+            </form>
+        </div>
+
+        
+    </main>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+
+    <script>
+        const queryString = window.location.search;
+
+        const urlParams = new URLSearchParams(queryString);
+        const id = urlParams.get('id');
+
+        const app = Vue.createApp({
+            el: '#myapp',
+            data() {
+                return {
+                    pemesanan: [],
+                }
+            },
+
+            methods: {
+                updateItem(item) {
+                    axios.post('ajaxedit.php', {
+                        request: 2,
+                        id: item.id,
+                        name: item.name,
+                        addres: item.addres,
+                        contact: item.contact,
+                        durasi: item.durasi,
+                        lapangan: item.lapangan,
+                        date: item.date,
+                        time: item.time,
+                    })
+                    .then(function (response) {
+                        this.pemesanan.splice(0, pemesanan.length);
+
+                        alert(response.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+
+                getData(id){
+                    axios.get('ajaxfetch.php?id=${id}')
+                    .then( (response) => {
+                        this.pemesanan= response.data;
+                        // alert(JSON.stringify(response.data, null, 2));
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            }, 
+
+            created() {
+                this.getData(id);
+            }
+        })
+        app.mount('#myapp')
+
+    </script>
+    
+</body>
+</html>

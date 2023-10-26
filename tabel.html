@@ -8,6 +8,10 @@
         <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
     </head>
 <body>
+    <header>
+        <h1>Tabel Pemesanan</h1>
+        <p>Tabel pemesanan lapangan futsal</p>
+    </header>
     <main id="myapp">
         <div id="table-content">
             <table>
@@ -31,8 +35,10 @@
                     <td>{{item.date}}</td>
                     <td>{{item.time}}</td>
                     <td>
-                        <button class="update-data"><img src="assets/edit.png" value="Update" @click="updateItem(index, item.id)"></button>
-                        <button class="update-data"><img src="assets/delete.png" alt="delete" value="Delete" @click="deleteItem(index, item.id)"></button>
+                        <a :href="'edit.html?id=' + item.id">
+                            <button class="update-data"><img src="assets/edit.png" value="Update"></button>
+                        </a>
+                        <button class="delete-data"><img src="assets/delete.png" alt="delete" value="Delete" @click="deleteItem(index, item.id)"></button>
                     </td>
                 </tr>
             </table>
