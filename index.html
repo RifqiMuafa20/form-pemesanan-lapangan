@@ -12,26 +12,26 @@
         <h1>Form Pemesanan</h1>
         <p>Form pemesanan lapangan futsal</p>
     </header>
-    <main id="app">
+    <main id="myapp">
         <div id="boxform">
-            <form v-on:submit.prevent="addItem">
+            <form>
                 <div id="form1">
                     <label for="nama">Nama Lengkap</label><br>
-                    <input type="text" id="nama"  placeholder="Masukkan nama lengkap" required v-model="itemName"><br>
+                    <input type="text" id="nama"  placeholder="Masukkan nama lengkap" required v-model="name"><br>
 
                     <label for="alamat">Alamat</label><br>
-                    <input type="text" id="alamat"  placeholder="Masukkan alamat" required v-model="itemAdress"><br>
+                    <input type="text" id="alamat"  placeholder="Masukkan alamat" required v-model="addres"><br>
 
                     <label for="nomor">Nomor Telepon</label><br>
-                    <input type="tel" id="nomor" placeholder="Masukkan no. hp" required v-model="itemContact" pattern="[0-9]*"><br>
+                    <input type="tel" id="nomor" placeholder="Masukkan no. hp" required v-model="contact" pattern="[0-9]*"><br>
                 </div>
 
                 <div id="form2">
                     <label for="durasi">Durasi</label><br>
-                    <input type="number" id="durasi"  placeholder="Pilih durasi" required v-model="itemDurasi"><br>
+                    <input type="number" id="durasi"  placeholder="Pilih durasi" required v-model="durasi"><br>
 
                     <label for="nolap">Nomor Lapangan</label><br>
-                    <select id="nolap" required v-model="itemLapangan">
+                    <select id="nolap" required v-model="lapangan">
                         <option value="pilih lapangan" selected hidden disabled>pilih lapangan</option>
                         <option value="lapangan 1">Lapangan 1</option>
                         <option value="lapangan 2">Lapangan 2</option>
@@ -40,14 +40,14 @@
 
 
                     <label for="tanggal">Tanggal Main</label><br>
-                    <input type="date" id="tanggal" placeholder="pilih tanggal" required v-model="itemDate"><br>
+                    <input type="date" id="tanggal" placeholder="pilih tanggal" required v-model="date"><br>
 
                     <label for="jam">Waktu Main</label><br>
-                    <input type="time" id="jam" placeholder="pilih jam" required v-model="itemTime"><br>
+                    <input type="time" id="jam" placeholder="pilih jam" required v-model="time"><br>
                 </div>
 
                 <div id="button">
-                    <button type="submit" id="submit">Masukkan data </button>
+                    <button type="submit" id="submit" value="add" @click="addItem()">Masukkan data </button>
                 </div>
             </form>
 
@@ -56,7 +56,7 @@
                     <tr>
                         <th>Nama Lengkap</th>
                         <th>Alamat</th>
-                        <th>No. Hp</th>
+                        <th>Nomor Hp</th>
                         <th>Lapangan</th>
                         <th>Durasi Sewa</th>
                         <th>Tanggal</th>
@@ -64,17 +64,18 @@
                         <th>Action</th>
                     </tr>
     
-                    <tr v-for="item in orderList">
+                    <tr v-for="(item, index) in pemesanan">
                         <td>{{item.name}}</td>
-                        <td>{{item.adress}}</td>
+                        <td>{{item.addres}}</td>
                         <td>{{item.contact}}</td>
                         <td>{{item.lapangan}}</td>
-                        <td>{{item.durasi}} jam</td>
+                        <td>{{item.durasi}}</td>
                         <td>{{item.date}}</td>
                         <td>{{item.time}}</td>
                         <td>
-                            <button class="update-data"><img src="assets/edit.png" alt="edit"></button>
-                            <button class="update-data"><img src="assets/delete.png" alt="delete"></button>
+                            <input type="button" value="Update" @click="updateItem(index, item.id)">&nbsp;
+                            <input type="button" value="Delete" @click="deleteItem(index, item.id)">
+                            
                         </td>
                     </tr>
                 </table>
@@ -86,53 +87,116 @@
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+
     <script>
         const app = Vue.createApp({
-            data(){
-                return{
-                    itemName: null,
-                    itemAdress: null,
-                    itemContact: null,
-                    itemLapangan: null,
-                    itemDurasi: null,
-                    itemDate: null,
-                    itemTime: null,
-                    orderList: [
-                        {
-                            name: 'name',
-                            adress: 'adress',
-                            contact: 'contact',
-                            lapangan: 'lapangan',
-                            durasi: 'durasi',
-                            date: 'date',
-                            time: 'time'
-                        }
-                    ]
+            el: '#myapp',
+            data() {
+                return {
+                    pemesanan: '',
+                    name: '',
+                    addres: '',
+                    contact: '',
+                    durasi: '',
+                    lapangan: '',
+                    date: '',
+                    time: '',
                 }
             },
-            methods:{
-                addItem(){
-                    let item = {
-                        name: this.itemName,
-                        adress: this.itemAdress,
-                        contact: this.itemContact,
-                        lapangan: this.itemLapangan,
-                        durasi: this.itemDurasi,
-                        date: this.itemDate,
-                        time: this.itemTime
+
+            methods: {
+                allRecords() {
+                    axios.post('ajaxfile.php', {
+                        request: 1
+                    })
+                    .then(function (response) {
+                        app.pemesanan = response.data;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+                addItem() {
+                    if(this.name != '' && this.addres != '' && this.contact != '' && this.durasi != '' && this.lapangan != '' && this.date != '' && this.time != '') {
+                        axios.post('ajaxfile.php', {
+                            request: 2,
+                            name: this.name,
+                            addres: this.addres,
+                            contact: this.contact,
+                            durasi: this.durasi,
+                            lapangan: this.lapangan,
+                            date: this.date,
+                            time: this.time,
+                        })
+                        .then(function (response) {
+                            app.allRecords();
+                            app.name = '';
+                            app.addres = '';
+                            app.contact = '';
+                            app.durasi = '';
+                            app.lapangan = '';
+                            app.date = '';
+                            app.time = '';
+
+                            alert(response.data);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }else {
+                        alert('fill all fields');
                     }
-                    this.orderList.push(item)
-                    this.itemName = null
-                    this.itemAdress = null
-                    this.itemContact = null
-                    this.itemLapangan = null
-                    this.itemDurasi = null
-                    this.itemDate = null
-                    this.itemTime = null
+                },
+                updateItem(index, id) {
+                    var name = this.pemesanan[index].name;
+                    var addres = this.pemesanan[index].addres;
+                    var contact = this.pemesanan[index].contact;
+                    var durasi = this.pemesanan[index].durasi;
+                    var lapangan = this.pemesanan[index].lapangan;
+                    var date = this.pemesanan[index].date;
+                    var time = this.pemesanan[index].time;
+
+                    if(name != '' && addres != '' && contact != '' && durasi != '' && lapangan != '' && date != '' && time != '') {
+                        axios.post('ajaxfile.php', {
+                            request: 3,
+                            id: id,
+                            name: name,
+                            addres: addres,
+                            contact: contact,
+                            durasi: durasi,
+                            lapangan: lapangan,
+                            date: date,
+                            time: time,
+                        })
+                        .then(function (response) {
+                            alert(response.data);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                },
+                deleteItem(index, id) {
+                    axios.post('ajaxfile.php', {
+                        request: 4,
+                        id: id
+                    })
+                    .then(function (response) {
+                        app.pemesanan.splice(index, 1);
+                        alert(response.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
                 }
+            }, 
+            created() {
+                this.allRecords();
             }
         })
-        app.mount('#app')
+        app.mount('#myapp')
+
     </script>
     
 </body>

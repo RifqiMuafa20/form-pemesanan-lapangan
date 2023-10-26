@@ -106,7 +106,7 @@ table {
     font-size: 13px;
     border-collapse: collapse;
     border-radius: 15px;
-    margin-bottom: 50px;
+    margin: 0px 20px 20px 18px;
     display: flex;
     justify-content:left;
 }
